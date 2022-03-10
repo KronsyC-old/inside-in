@@ -3,7 +3,7 @@ const kIsRoot = Symbol("Is Root?")
 const kChildren = Symbol("Children")
 const kParent = Symbol("Parent")
 export const kInheritedRawPropertyStore = Symbol("Inherited Raw Property Store")
-
+export const kDefaultPropertyForFromRoot = Symbol("Default Property for FromRoot Decorator")
 type StringIndexed = {
     [x:string]:any
 }
@@ -13,6 +13,7 @@ export default class Nestable{
     private [kChildren]:Nestable[] = [];
     private [kParent]? : Nestable;
     private [kInheritedRawPropertyStore]:StringIndexed = {}
+    private [kDefaultPropertyForFromRoot]:StringIndexed={}
 
     constructor(parent?:Nestable){
         this[kParent] = parent 
@@ -24,7 +25,6 @@ export default class Nestable{
             throw new Error("Nestable cannot be it's own child")
         }
         if(!nestable[kParent]){
-            console.log("Orphan");
             
             nestable[kParent] = this
             nestable[kIsRoot] = false

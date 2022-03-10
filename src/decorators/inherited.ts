@@ -14,7 +14,7 @@ type BoundToNestableSetter = {
  * @param deepCopy Should nested properties be deep-copied or just shallow copied (more performant)
  * @returns 
  */
-export default function Inherited(overrideParentProperties:boolean=true, deepCopy:boolean=false){
+export function Inherited(overrideParentProperties:boolean=true, deepCopy:boolean=false){
 
     return function(target: Nestable, propertyKey: string){
         // If it is an array or JSON, include the properties of the parent, and override depending on preference
