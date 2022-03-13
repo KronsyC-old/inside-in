@@ -5,45 +5,44 @@ const kParent = Symbol("Parent")
 export const kInheritedRawPropertyStore = Symbol("Inherited Raw Property Store")
 export const kDefaultPropertyForFromRoot = Symbol("Default Property for FromRoot Decorator")
 type StringIndexed = {
-    [x:string]:any
+    [x:symbol|string|number]:any
 }
 
 export default class Nestable{
     private [kIsRoot]:boolean;
-    private [kChildren]:Nestable[] = [];
-    private [kParent]? : Nestable;
+    private [kChildren]:this[] = [];
+    private [kParent]? : this;
     private [kInheritedRawPropertyStore]:StringIndexed = {}
     private [kDefaultPropertyForFromRoot]:StringIndexed={}
 
-    constructor(parent?:Nestable){
-        this[kParent] = parent 
-        this[kIsRoot] = parent?false:true
+    constructor(){
+        // Root Node by default
+        this[kIsRoot] = true
     }
 
-    public addChild(nestable:Nestable){
-        if(nestable === this){
+    public addChild(child:this){
+        if(child === this){
             throw new Error("Nestable cannot be it's own child")
         }
-        if(!nestable[kParent]){
+        if(!child[kParent]){
             
-            nestable[kParent] = this
-            nestable[kIsRoot] = false
+            child[kParent] = this
+            child[kIsRoot] = false
         }
-        this[kChildren].push(nestable)
+        this[kChildren].push(child)
     }
-    public getChildren(){
+    public getChildren(): this[]{
         return this[kChildren]
     }
     public deepGetChildren(){
-        const children:Nestable[] = []
-        this[kChildren].forEach( child => {
+        const children:this[] = []
+        this.getChildren().forEach( child => {
             children.push(child)
             children.push(...child.deepGetChildren())
         } )
         return children
     }
-    public getRootNode() : Nestable{
-        
+    public getRootNode() : this{
         if(this[kIsRoot]){
             return this
         }

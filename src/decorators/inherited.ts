@@ -16,7 +16,7 @@ type BoundToNestableSetter = {
  */
 export function Inherited(overrideParentProperties:boolean=true, deepCopy:boolean=false){
 
-    return function(target: Nestable, propertyKey: string){
+    return function(target: Nestable, propertyKey: string|symbol|number){
         // If it is an array or JSON, include the properties of the parent, and override depending on preference
         // Otherwise, throw an error
         const getter:BoundToNestable = function(){
@@ -33,8 +33,8 @@ export function Inherited(overrideParentProperties:boolean=true, deepCopy:boolea
                      parentProps = clone(parentProps)
                 }
 
-                if(overrideParentProperties)return Object.assign(parentProps, value)
-                else return Object.assign(value, parentProps)
+                if(overrideParentProperties)return {...parentProps, ...value}
+                else return {...value, ...parentProps}
             }
         }
         const setter:BoundToNestableSetter = function(data:object){

@@ -1,1 +1,0 @@
-import Nestable, {Inherited} from "."

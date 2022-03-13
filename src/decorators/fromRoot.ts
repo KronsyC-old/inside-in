@@ -6,7 +6,7 @@ type BoundToNestableSetter = {
     (this:Nestable, data:object):any
 }
 export function FromRoot(){
-    return function(target: Nestable, propertyKey: string){
+    return function(target: Nestable, propertyKey: string|symbol|number){
         const getter : BoundToNestable = function(){
             const defaults = this[kDefaultPropertyForFromRoot]
             const root = this.getRootNode()
