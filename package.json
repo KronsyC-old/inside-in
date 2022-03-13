@@ -1,6 +1,6 @@
 {
   "name": "inside-in",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A Utility to assist in building nested data structures",
   "main": "./dist/index.js",
   "repository": "https://github.com/KronsyC/inside-in.git",
