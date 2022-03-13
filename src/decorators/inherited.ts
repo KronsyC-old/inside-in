@@ -1,6 +1,6 @@
 import Nestable, { kInheritedRawPropertyStore } from "../Nestable";
 import clone from "clone"
-
+import merge from "deepmerge"
 type BoundToNestable = {
     (this:Nestable):any
 }
@@ -14,7 +14,7 @@ type BoundToNestableSetter = {
  * @param deepCopy Should nested properties be deep-copied or just shallow copied (more performant)
  * @returns 
  */
-export function Inherited(overrideParentProperties:boolean=true, deepCopy:boolean=false){
+export function Inherited(overrideParentProperties:boolean=true, deepMerge:boolean=false){
 
     return function(target: Nestable, propertyKey: string|symbol|number){
         // If it is an array or JSON, include the properties of the parent, and override depending on preference
@@ -27,14 +27,14 @@ export function Inherited(overrideParentProperties:boolean=true, deepCopy:boolea
             }
             else{
                 //@ts-expect-error
-                let parentProps = parent[propertyKey]
+                const parentProps = parent[propertyKey]
+                let toReturn = overrideParentProperties?{...parentProps, ...value}:{...value, ...parentProps}
                 // Form an aggregate of the parent and the current node
-                if(deepCopy){
-                     parentProps = clone(parentProps)
+                if(deepMerge){
+                     toReturn = overrideParentProperties?merge(parentProps, value):merge(value, parentProps)
                 }
 
-                if(overrideParentProperties)return {...parentProps, ...value}
-                else return {...value, ...parentProps}
+                return toReturn
             }
         }
         const setter:BoundToNestableSetter = function(data:object){
