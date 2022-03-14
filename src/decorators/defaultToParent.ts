@@ -2,26 +2,18 @@ import Nestable from "../Nestable";
 
 export function DefaultToParent(){
     return function(target: Nestable, propertyKey: string|symbol|number){
-        console.log("YO");
         
-        const key = Symbol(`DefaultToParent key for ${String(propertyKey)}`)
-        // console.log(key);
-        
-        Object.defineProperty(target, key, {
-            value: undefined,
-            configurable: true,
-            writable: true
-        })
-        const getter = () => {
+        const key = Symbol(`DefaultToParent property for ${String(propertyKey)}`)
+        function getter(){
             //@ts-expect-error
-            if(target[key]){
+            if(this[key]){
+                
                 //@ts-expect-error
-                return target[key]
+                return this[key]
 
             }
             else{
                 const parent = target.getParent()
-                console.log(parent);
                 
                 //@ts-expect-error
                 if(parent?.[key]){
@@ -33,9 +25,10 @@ export function DefaultToParent(){
                 }
             }
         }
-        const setter = (value:any) => {
+        function setter (value:any)  {
+            
             //@ts-expect-error
-            target[key] = value
+            this[key] = value
         }
         Object.defineProperty(target, propertyKey, {
             get: getter,
