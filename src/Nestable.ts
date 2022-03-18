@@ -2,8 +2,6 @@
 const kIsRoot = Symbol("Is Root?")
 const kChildren = Symbol("Children")
 const kParent = Symbol("Parent")
-export const kInheritedRawPropertyStore = Symbol("Inherited Raw Property Store")
-export const kDefaultPropertyForFromRoot = Symbol("Default Property for FromRoot Decorator")
 type StringIndexed = {
     [x:symbol|string|number]:any
 }
@@ -12,15 +10,13 @@ export default class Nestable{
     private [kIsRoot]:boolean;
     private [kChildren]:this[] = [];
     private [kParent]? : this;
-    private [kInheritedRawPropertyStore]:StringIndexed = {}
-    private [kDefaultPropertyForFromRoot]:StringIndexed={}
 
     constructor(){
         // Root Node by default
         this[kIsRoot] = true
     }
 
-    public addChild(child:this){
+    protected addChild(child:this){
         if(child === this){
             throw new Error("Nestable cannot be it's own child")
         }
@@ -31,10 +27,10 @@ export default class Nestable{
         }
         this[kChildren].push(child)
     }
-    public getChildren(): this[]{
+    protected getChildren(): this[]{
         return this[kChildren]
     }
-    public deepGetChildren(){
+    protected deepGetChildren(){
         const children:this[] = []
         this.getChildren().forEach( child => {
             children.push(child)
@@ -42,7 +38,7 @@ export default class Nestable{
         } )
         return children
     }
-    public getRootNode() : this{
+    protected getRootNode() : this{
         if(this[kIsRoot]){
             return this
         }
@@ -53,7 +49,7 @@ export default class Nestable{
             throw new Error("Cannot Get Root Node For Nestable")
         }
     }
-    public getParent(){
+    protected getParent(){
         if(this[kParent]){
             return this[kParent]
         }else{

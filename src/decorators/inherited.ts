@@ -1,5 +1,4 @@
-import Nestable, { kInheritedRawPropertyStore } from "../Nestable";
-import clone from "clone"
+import Nestable from "../Nestable";
 import merge from "deepmerge"
 type BoundToNestable = {
     (this:Nestable):any
@@ -19,19 +18,21 @@ export function Inherited(overrideParentProperties:boolean=true, deepMerge:boole
     return function(target: Nestable, propertyKey: string|symbol|number){
         // If it is an array or JSON, include the properties of the parent, and override depending on preference
         // Otherwise, throw an error
+        const symbol = Symbol(`Inherited Property for ${String(propertyKey)}`)
         const getter:BoundToNestable = function(){
-            const value = this[kInheritedRawPropertyStore][propertyKey]
-            const parent = this.getParent()
+            //@ts-expect-error
+            const value = this[symbol]
+            const parent = this["getParent"]()
             if(!parent){
                 return value
             }
             else{
                 //@ts-expect-error
-                const parentProps = parent[propertyKey]
-                let toReturn = overrideParentProperties?{...parentProps, ...value}:{...value, ...parentProps}
+                const parentProp = parent[symbol]
+                let toReturn = overrideParentProperties?{...parentProp, ...value}:{...value, ...parentProp}
                 // Form an aggregate of the parent and the current node
                 if(deepMerge){
-                     toReturn = overrideParentProperties?merge(parentProps, value):merge(value, parentProps)
+                     toReturn = overrideParentProperties?merge(parentProp, value):merge(value, parentProp)
                 }
 
                 return toReturn
@@ -41,8 +42,8 @@ export function Inherited(overrideParentProperties:boolean=true, deepMerge:boole
             if(typeof data !== "object"){
                 throw new Error("@Inherited() Decorated Properties must be objects")
             }
-            
-            this[kInheritedRawPropertyStore][propertyKey] = data
+            //@ts-expect-error
+            this[symbol] = data
             
         }
         Object.defineProperty(target, propertyKey, {
