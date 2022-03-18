@@ -12,18 +12,20 @@ export function FromRoot(){
 
         const getter : BoundToNestable = function(){
             //@ts-expect-error
-            const def = this[propertySymbol]
+            const _default = this[propertySymbol]
             const root = this["getRootNode"]()
+            
             if(root===this){
-                return def[propertySymbol]
+                return _default
             }
             //@ts-expect-error
             const rootValue = root[propertySymbol]
+            
             if(rootValue){
                 return rootValue
             }
             else{
-                return def
+                return _default
             }
             
         }

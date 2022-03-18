@@ -13,7 +13,7 @@ export function DefaultToParent(){
 
             }
             else{
-                const parent = target.getParent()
+                const parent = target["getParent"]()
                 
                 //@ts-expect-error
                 if(parent?.[key]){
