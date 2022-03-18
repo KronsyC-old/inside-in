@@ -2,9 +2,6 @@ import Nestable from "./Nestable";
 import { FromRoot, DefaultToParent } from "./decorators";
 
 class Testing extends Nestable{
-    constructor(initialState?:object){
-        super()
-    }
 
     @FromRoot()
     username?: string;

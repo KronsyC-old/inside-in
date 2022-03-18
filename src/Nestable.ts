@@ -2,9 +2,6 @@
 const kIsRoot = Symbol("Is Root?")
 const kChildren = Symbol("Children")
 const kParent = Symbol("Parent")
-type StringIndexed = {
-    [x:symbol|string|number]:any
-}
 
 export default class Nestable{
     private [kIsRoot]:boolean;
